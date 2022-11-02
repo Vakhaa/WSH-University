@@ -1,4 +1,4 @@
-export default interface MailAuth{
-    user: string,
-    pass: string
+export default interface MailAuth {
+  user: string;
+  pass: string;
 }

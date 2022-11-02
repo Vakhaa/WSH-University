@@ -6,10 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from 'config/configuration';
 
 @Module({
-  imports: [
-    MailModule,
-    ConfigModule.forRoot({load: [configuration]})
-  ],
+  imports: [MailModule, ConfigModule.forRoot({ load: [configuration] })],
   controllers: [AppController],
   providers: [AppService],
 })
