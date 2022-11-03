@@ -11,3 +11,4 @@
 3. Go to the section Files. There are list of files and file input.
 4. You can add new file using file input.
 5. You can upload a file from the list.
+6. And even delete a current file.
