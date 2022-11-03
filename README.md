@@ -1,13 +1,13 @@
 # WSH-University (PL)
 ##Technologie Front i Back End
 
-###### Zad.1 - wysyłka maili na podstawie zdarzeń w aplikacji webowej.
-> Zintegruj usługę wysyłanie maili z własnym projektem aplikacji web. np. poinformuj o zdarzeniu w aplikacji (np. edycja użytkownika)
+###### Zad.2 - upload danych
+> Dodaj funkcjonalność uploadu danych na serwer. Stwórz stronę gdzie będą linki do przesłanych danych.
 
 ###### Recipe:
 1. You need to start both application (client and server). 
   Go to the folder and use command: `npm start`
 2. Open url: `http://localhost:3000`
-3. Write to first input (existing) email.
-4. Write your message in the second area.
-5. Click and receive a message in your mail.
+3. Go to the section Files. There are list of files and file input.
+4. You can add new file using file input.
+5. You can upload a file from the list.
