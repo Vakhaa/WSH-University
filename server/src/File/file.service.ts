@@ -12,8 +12,17 @@ export class FileService {
     console.log(file);
   }
 
-  async getAllFilesName(){
+  getAllFilesName(){
    return  fs.readdirSync('../upload/');
+  }
+
+  deleteStaticFile(filepath: string){
+    try{
+      fs.rmSync(filepath);
+      return true;
+    }catch(error){
+      return false;
+    }
   }
 
 }

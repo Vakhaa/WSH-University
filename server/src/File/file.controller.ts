@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Post, Res, StreamableFile, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Res, StreamableFile, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
 import { Express } from 'express'
@@ -47,16 +47,24 @@ export class FileController {
     return this.fileService.getAllFilesName();
   }
 
-   @Get(':name')
-   getStaticFile(@Param() params, @Res({ passthrough: true }) res: Response): StreamableFile {
-     
-     const filepath = join(process.cwd()+"\\..\\upload", params.name);
-
-     res.attachment(filepath);
+  @Get(':name')
+  getStaticFile(@Param() params, @Res({ passthrough: true }) res: Response): StreamableFile {
     
-     const file = createReadStream(filepath);
+    const filepath = join(process.cwd()+"\\..\\upload", params.name);
 
-     return new StreamableFile(file);
-   }  
+    res.attachment(filepath);
+  
+    const file = createReadStream(filepath);
+
+    return new StreamableFile(file);
+  }
+
+  @Delete(':name')
+  deleteStaticFile(@Param() params){
+    const filepath = join(process.cwd()+"\\..\\upload", params.name);
+    const isDelete = this.fileService.deleteStaticFile(filepath);
+
+    return {isDelete: isDelete};
+  }
 
 }
