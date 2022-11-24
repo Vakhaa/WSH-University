@@ -1,70 +1,73 @@
-import { Controller, Delete, Get, Param, Post, Res, StreamableFile, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Res, 
+  UploadedFile, UseInterceptors,
+  NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { FileService } from "./file.service";
 import { FileInterceptor } from '@nestjs/platform-express';
-import { FileService } from './file.service';
+//for type
+import { StorageFile } from "./storage-file";
 import { Express } from 'express'
-import { diskStorage } from 'multer';
-import { extname, join} from 'path';
-
-//fro type
 import type { Response } from 'express';
-import { createReadStream } from 'fs';
 
-export const editFileName = (req, file, callback) => {
-  const name = file.originalname.split('.')[0];
-  const fileExtName = extname(file.originalname);
-  // there we crate random additional to our file
-  const randomName = Array(4)
+
+export const randomName = () => {
+  return Array(4)
     .fill(null)
     .map(() => Math.round(Math.random() * 16).toString(16))
     .join('');
-  callback(null, `${name}-${randomName}${fileExtName}`);
 };
 
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
-  
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file',
-    {
-      storage: diskStorage({
-        destination: '../upload',
-        filename: editFileName,
-      })
-    } 
-  ))
-  uploadFile(@UploadedFile() file: Express.Multer.File) {
-    //we need to check that this file already exists or not.
-    // before we save, but we need do it in pipeline. Maybe in module.
-    return {
-      name: file.filename,
-    }
-  }
-
   @Get('all_names')
-  getAllFilesName() {
+  async getAllFilesName() {
     return this.fileService.getAllFilesName();
   }
 
-  @Get(':name')
-  getStaticFile(@Param() params, @Res({ passthrough: true }) res: Response): StreamableFile {
+  @Get("/:name")
+  async downloadMedia(@Param("name") name: string, @Res() res: Response) {
+    let storageFile: StorageFile;
+
+    try {
+      storageFile = await this.fileService.getWithMetaData("media/" + name);
+    } catch (e) {
     
-    const filepath = join(process.cwd()+"\\..\\upload", params.name);
-
-    res.attachment(filepath);
-  
-    const file = createReadStream(filepath);
-
-    return new StreamableFile(file);
+      if (e.message.toString().includes("No such object")) { 
+        throw new NotFoundException("image not found");
+      } else {
+        throw new ServiceUnavailableException("internal error");
+      }
+    }
+    res.setHeader("Content-Type", storageFile.contentType);
+    res.setHeader("Cache-Control", "max-age=60d");
+    res.end(storageFile.buffer);
   }
 
-  @Delete(':name')
-  deleteStaticFile(@Param() params){
-    const filepath = join(process.cwd()+"\\..\\upload", params.name);
-    const isDelete = this.fileService.deleteStaticFile(filepath);
+  @Post()
+  @UseInterceptors(
+    FileInterceptor("file", {
+      limits: {
+        files: 1,
+        // fileSize: 1024 * 1024,
+      },
+    })
+  )
+  async uploadMedia( @UploadedFile() file: Express.Multer.File) {
 
-    return {isDelete: isDelete};
+    await this.fileService.save(
+      "media/" + file.originalname,
+      file.mimetype,
+      file.buffer,
+      [{ mediaId:  file.originalname}]
+    );
+  }
+
+  @Delete(':path') // must be another, better way 
+  async deleteFile(@Param("path") path:string, @Res() res: Response){
+
+    this.fileService.delete("media/"+ path);
+    res.sendStatus(200);
   }
 
 }

@@ -12,7 +12,7 @@ function Filer() {
     form.append("file", file);
 
     let response = await axios({
-      url: "http://localhost:5000/file/upload",
+      url: "http://localhost:5000/file",
       method:'POST',
       headers:{
         "Content-Type": "multipart/form-data",

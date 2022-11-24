@@ -16,7 +16,9 @@ function FilesList() {
         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
       },
     });
-
+    
+    console.log("FilesList -> [fucntion refreshFilesList]")
+    console.log(response.data)
     setFiles(response.data);
   }
 
@@ -38,9 +40,9 @@ export default FilesList;
 
 const FileItem = ({file}) => {
 
-  var takeStaticFile = async () => {
-    let response = await axios({
-      url: "http://localhost:5000/file/" + file,
+  var downloadFile = async () => {
+      let response = await axios({
+      url: "http://localhost:5000/file/" + file.name.split('/')[1],
       headers:{
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
@@ -55,7 +57,7 @@ const FileItem = ({file}) => {
     link.href = url;
     link.setAttribute(
       'download',
-      file,
+      file.name.split('/')[1],
     );
 
     // Append to html link element page
@@ -66,10 +68,10 @@ const FileItem = ({file}) => {
 
     // Clean up and remove the link
     link.parentNode.removeChild(link);
+
   }
- 
   var deleteStaticFile = async () => {
-    await axios.delete("http://localhost:5000/file/" + file, {
+    await axios.delete("http://localhost:5000/file/" + file.name.split('/')[1], {
       headers:{
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
@@ -80,8 +82,8 @@ const FileItem = ({file}) => {
   return (<>
   <div>
     <span>
-      <a href="#"  onClick={takeStaticFile}>
-        {file}
+      <a href="#"  onClick={downloadFile}>
+        {file.name.split('/')[1]}
       </a>
     </span>
     <span>
