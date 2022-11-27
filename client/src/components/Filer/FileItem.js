@@ -43,18 +43,52 @@ const FileItem = ({file}) => {
     dispatch(deleteFileAction(file.name.split('/')[1]))
   },[]);
 
-  return (<>
-  <div>
-    <span>
-      <a href="#"  onClick={downloadFile}>
-        {file.name.split('/')[1]}
-      </a>
-    </span>
-    <span>
-      <button onClick={deleteFile}>Delete</button>
-    </span>
-  </div>
-  </>);
+  return (<div style={style.file_item}>
+    <div style={style.file} onClick={downloadFile}>
+      <img src="https://cdn-icons-png.flaticon.com/512/101/101671.png" style={style.file_body}/>
+      <span>
+        <p>
+          {file.name.split('/')[1]}
+        </p>
+      </span>
+    </div>
+    <div style={style.file_options}>
+      {/* other options... */}
+      <span>
+        <button onClick={deleteFile}>Delete</button>
+      </span>
+    </div>
+  </div>);
 }
 
 export default FileItem;
+
+const style = {
+  file_item:{
+    display:"flex", 
+    border:"1px solid black", 
+    borderRadius:"15px",
+    alignItems:'center',
+    marginLeft: "15px",
+  },
+  file:{
+    marginTop: "15px", 
+    marginLeft: "15px",
+    display:'flex',
+    flexDirection:'column',
+    cursor:'pointer'
+  },
+  file_body:{
+    width:"100px", 
+    height:"100px", 
+    // justifyContent: "space-between"
+  },
+  file_options:{
+    display:'flex',
+    flexDirection:'column'
+
+  },
+  file_title:{
+
+  }
+}

@@ -1,28 +1,42 @@
-import {useCallback, useState} from 'react'
+import {useCallback} from 'react'
 import { useDispatch } from 'react-redux'
 import {addFileAction} from '../../redux/features/files/filesAction'
 
 
 function Filer(props) {
 
-  let [file, setFile] = useState("");
   const dispatch = useDispatch();
 
   var loadFile = useCallback((event) => {
     if(event.target.files[0]){
-        setFile(event.target.files[0]);
-    }
+        dispatch(addFileAction(event.target.files[0]));
+    };
+
   },[]);
 
   return (<>
-  <div>
-    <input name="file" type="file" onChange={loadFile}  />
-    {/* <Field name="file" type="file" accept="image/*" onChange={loadFile}  /> */}
-    <button type="submit" onClick={()=>dispatch(addFileAction(file))}>
-      Submit
-    </button>
+  <div style={style.file_loader}>
+    <label htmlFor="upload">
+      <img src="https://cdn-icons-png.flaticon.com/512/2088/2088591.png" style={style.file_loader_body}/>
+      <input type="file" id="upload" style={{display:"none"}} onChange={loadFile}/>
+    </label>
   </div>
   </>);
 }
 
 export default Filer;
+
+const style = {
+  file_loader:{
+    display:'block',
+    width:"100px", 
+    height:"100px", 
+    marginLeft: "50px",
+    marginTop: "15px", 
+  },
+  file_loader_body:{
+    width:'100px',
+    height:'100px',
+    cursor:"pointer"
+  }
+}

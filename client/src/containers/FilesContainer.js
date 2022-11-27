@@ -1,12 +1,11 @@
-import {useCallback, useEffect, useLayoutEffect} from 'react'
+import {useEffect} from 'react'
 import FilesList from '../components/Filer/FilesList';
 import Filer from '../components/Filer/Filer';
 
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  getFilesAction
-} from '../redux/features/files/filesAction'
+import { getFilesAction} from '../redux/features/files/filesAction'
 import { selectFiles } from '../redux/features/files/filesSlice'
+import { Outlet } from 'react-router-dom';
 
 
 function FilesContainer() {
@@ -18,33 +17,23 @@ function FilesContainer() {
         dispatch(getFilesAction());
     },[]);
 
-  return (<>
-    <Filer />
-    {files.length == 0? "You do not added file yet!": <FilesList files={files}/>}
-  </>);
+  return (
+  <div style={{display:"flex", justifyContent:"space-between", alignItems:'start'}}>
+    <div style={style.files_container}>
+      {files.length != 0 && <FilesList files={files}/>}
+      <Filer />
+      {files.length == 0 && <h4> You don't have the files</h4>}
+    </div>
+    <Outlet />
+  </div>
+  );
 }
 
 export default  FilesContainer;
 
-
-// <Formik
-// enableReinitialize
-// // initialValues={getInitData()}
-// onSubmit={(values,{ setSubmitting }) => {
-//   setTimeout(() => {
-//     sendFile(file);
-//     setSubmitting(false);
-//   }, 400);
-// }}>
-// { ({values, setValues, isSubmitting}) => (
-//     <Form>
-//       <ErrorMessage name="file" component="div" />
-//<input name="file" type="file" onChange={loadFile}  />
-/* <Field name="file" type="file" accept="image/*" onChange={loadFile}  /> */
-//<button type="submit" disabled={isSubmitting}>
-//   Submit
-// </button>
-
-//     </Form>
-// )}
-// </Formik>
+const style = {
+  files_container:{
+    display:'flex', 
+    alignItems:'center', 
+  }
+}
