@@ -44,6 +44,14 @@ export class FileController {
     res.end(storageFile.buffer);
   }
 
+  @Get("meta/:name")
+  async downloadMetadata(@Param("name") name: string, @Res() res: Response) {
+    
+    const result = await this.fileService.getFileMetadata("media/"+name);
+
+    res.send(result);
+  }
+
   @Post()
   @UseInterceptors(
     FileInterceptor("file", {
@@ -53,14 +61,17 @@ export class FileController {
       },
     })
   )
-  async uploadMedia( @UploadedFile() file: Express.Multer.File) {
+  async uploadMedia( @UploadedFile() file: Express.Multer.File, @Res() res: Response) {
 
+    const fileName = "media/" + file.originalname;
     await this.fileService.save(
-      "media/" + file.originalname,
+      fileName,
       file.mimetype,
       file.buffer,
       [{ mediaId:  file.originalname}]
     );
+
+    res.sendStatus(201);
   }
 
   @Delete(':path') // must be another, better way 
