@@ -1,10 +1,10 @@
 # WSH-University (PL)
-##Projekt inżynierski - A document management system (**DMS**)
+## Projekt inżynierski - A document management system (**DMS**)
 > A document management system (DMS) is system used to store, share, 
 > track and manage files or documents.
 > This is single-page application (SPA).
 
-## Technologies
+###### Technologies
 + React & Redux
 + Nestjs
 + MongoDB 
@@ -16,7 +16,7 @@
 + ~~Socket.io~~ <sup>Not yet</sup>
 + ...
 
-###### Recipe:
+## Recipe:
 1. You need to start both application (client and server). 
   Go to the folder and use command: `npm start`
 2. Open url: `http://localhost:3000`
