@@ -1,13 +1,23 @@
 # WSH-University (PL)
-##Technologie Front i Back End
+## Projekt inżynierski - A document management system (**DMS**)
+> A document management system (DMS) is system used to store, share, 
+> track and manage files or documents.
+> This is single-page application (SPA).
 
-###### Zad.2 - upload danych
-> Dodaj funkcjonalność uploadu danych na serwer. Stwórz stronę gdzie będą linki do przesłanych danych.
+###### Technologies
++ React & Redux
++ Nestjs
++ MongoDB 
++ Firebase
++ Google Cloud Storage
++ Docker
++ ~~Sass~~ <sup>Not yet</sup>
++ ~~Socket.io~~ <sup>Not yet</sup>
++ ~~Socket.io~~ <sup>Not yet</sup>
++ ...
 
-###### Recipe:
+## Recipe:
 1. You need to start both application (client and server). 
   Go to the folder and use command: `npm start`
 2. Open url: `http://localhost:3000`
-3. Go to the section Files. There are list of files and file input.
-4. You can add new file using file input.
-5. You can upload a file from the list.
+3. Sign in and enjoy )
