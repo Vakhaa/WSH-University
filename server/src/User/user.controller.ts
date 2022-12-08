@@ -1,16 +1,24 @@
-import { Body, Controller, Get, Post, Delete, Param } from '@nestjs/common';
+import { Headers, Body, Controller, Get, Post, Delete, Param, Res } from '@nestjs/common';
 import { User } from 'src/Infrastructure/Schemas/user.schema';
 import { UserDto } from './user.dto';
 import { UserService } from './user.service';
+
+import type { Response } from 'express';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get(':id')
-  async getProfile(@Param('id') id: string) : Promise<User> {
-    return this.userService.findOne(id);
-  };
+  @Get()
+  async getProfileByEmail(@Headers("email") email: string, @Res() res: Response) {
+
+    if(email.length == 0) res.sendStatus(400);
+    
+    const user = await this.userService.findOneByEmail(email);
+    if(user == null) res.sendStatus(204);
+    
+    res.send(user);
+  };  
 
   @Get()
   async getAllProfiles() : Promise<User[]> {
@@ -18,8 +26,8 @@ export class UserController {
   };
   
   @Post()
-  async createProfile(): Promise<User>{
-    return this.userService.create( new UserDto("name code" + (Date.now()%10), "https://i1.sndcdn.com/artworks-lMByCSU7UjUew4Tf-yLe2aA-t500x500.jpg", "ex@gmail.com"));
+  async createProfile(@Body() user: UserDto): Promise<User>{
+    return this.userService.create(user);
   };
   
   @Delete(':id')

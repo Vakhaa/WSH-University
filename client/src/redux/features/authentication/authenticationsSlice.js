@@ -10,7 +10,6 @@ const authenticationsSlice = createSlice({
     login: (state, action) => {
       state.isLogin = true;
       state.user = action.payload;
-      console.log("action.payload", action.payload);
     },
     logout: (state, action) =>{
       state.isLogin = false;

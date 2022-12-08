@@ -1,11 +1,18 @@
 export class UserDto {
-    readonly name: string;
-    readonly photo: string;
-    readonly email: string;;
-
-    constructor(name : string, photo: string, email:string){
-      this.name = name;
-      this.photo = photo;
-      this.email = email;
-    }
+     fullName: string;
+     photo: string;
+     email: string;
   }
+
+
+  // export class UserDto {
+  //   readonly fullName: string;
+  //   readonly photo: string;
+  //   readonly email: string;
+
+  //   constructor(fullName : string, photo: string, email:string){
+  //     this.fullName = fullName;
+  //     this.photo = photo;
+  //     this.email = email;
+  //   }
+  // }

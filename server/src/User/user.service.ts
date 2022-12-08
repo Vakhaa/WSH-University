@@ -13,16 +13,17 @@ export class UserService {
   private configService: ConfigService
   ) {}
   async create(userDto: UserDto): Promise<User> {
-    const createProfile = await this.userModel.create(userDto);
-    return createProfile;
+    return this.userModel.create(userDto);
   }
 
   async findAll(): Promise<User[]> {
     return this.userModel.find().exec();
   }
 
-  async findOne(id: string): Promise<User> {
-    return this.userModel.findOne({ _id: id }).exec();
+  async findOneByEmail(email: string): Promise<User> {
+    const  isExists = this.userModel.exists({ email: email });
+    if(!isExists) return null;
+    return this.userModel.findOne({ email: email }).exec();
   }
 
   async delete(id: string) {

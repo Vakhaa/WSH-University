@@ -5,8 +5,8 @@ export const MiniProfile = (props) => {
  
   return (<>
     <div style={style.mini_profile}>
-      <p style={{marginRight:"15px"}}>{user.displayName}</p>
-      <img style={style.mini_avatar} src={user.photoURL} alt="My avatar"/>
+      <p style={{marginRight:"15px"}}>{user.fullName}</p>
+      <img style={style.mini_avatar} src={user.photo} alt="My avatar"/>
     </div>
   </>)
 }
