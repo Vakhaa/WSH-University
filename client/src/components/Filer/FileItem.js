@@ -3,17 +3,22 @@ import { useCallback } from 'react';
 import { useDispatch } from 'react-redux'
 import {deleteFileAction} from '../../redux/features/files/filesAction'
 
-const FileItem = ({file}) => {
+const FileItem = ({file, path}) => {
   console.log("FilesItem")
   const dispatch = useDispatch();
   
     // it's also must be in redux
   var downloadFile = useCallback(async () => {
+    
+    let folders = "";
+    path.url.forEach( item => folders += item+"/");    
+    
     let response = await axios({
-    url: "http://localhost:5000/file/" + file.name.split('/')[1],
+    url: "http://localhost:5000/file/" + file.name,
     headers:{
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+      "path": folders
     },
     responseType: "blob" 
     })
@@ -25,7 +30,7 @@ const FileItem = ({file}) => {
     link.href = url;
     link.setAttribute(
       'download',
-      file.name.split('/')[1],
+      file.name,
     );
 
     // Append to html link element page
@@ -40,7 +45,10 @@ const FileItem = ({file}) => {
   }, []);
 
   var deleteFile = useCallback(async () => {
-    dispatch(deleteFileAction(file.name.split('/')[1]))
+    let folders = "";
+    path.url.forEach( item => folders += item+"/");    
+    
+    dispatch(deleteFileAction(file.name, folders))
   },[]);
 
   return (<div style={style.file_item}>
@@ -48,7 +56,7 @@ const FileItem = ({file}) => {
       <img src="https://cdn-icons-png.flaticon.com/512/101/101671.png" style={style.file_body}/>
       <span>
         <p>
-          {file.name.split('/')[1]}
+          {file.name}
         </p>
       </span>
     </div>

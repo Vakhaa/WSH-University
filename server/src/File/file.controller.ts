@@ -1,6 +1,6 @@
-import { Controller, Delete, Get, Param, Post, Res, 
-  UploadedFile, UseInterceptors,
-  NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import { Headers, Delete, Get, Param, Post, Res, 
+  Controller, UploadedFile, UseInterceptors,
+  NotFoundException, ServiceUnavailableException, Body } from '@nestjs/common';
 import { FileService } from "./file.service";
 import { FileInterceptor } from '@nestjs/platform-express';
 //for type
@@ -8,29 +8,21 @@ import { StorageFile } from "./storage-file";
 import { Express } from 'express'
 import type { Response } from 'express';
 
-
-export const randomName = () => {
-  return Array(4)
-    .fill(null)
-    .map(() => Math.round(Math.random() * 16).toString(16))
-    .join('');
-};
-
 @Controller('file')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
   @Get('all_names')
-  async getAllFilesName() {
-    return this.fileService.getAllFilesName();
+  async getAllFilesName(@Headers("userId") userId: string) {
+    return this.fileService.getAllFilesName(userId);
   }
 
-  @Get("/:name")
-  async downloadMedia(@Param("name") name: string, @Res() res: Response) {
+  @Get("/:filename")
+  async downloadMedia(@Param("filename") filename: string, @Headers("path") path: string, @Res() res: Response) {
     let storageFile: StorageFile;
 
     try {
-      storageFile = await this.fileService.getWithMetaData("media/" + name);
+      storageFile = await this.fileService.getWithMetaData(path+filename);
     } catch (e) {
     
       if (e.message.toString().includes("No such object")) { 
@@ -44,10 +36,18 @@ export class FileController {
     res.end(storageFile.buffer);
   }
 
-  @Get("meta/:name")
-  async downloadMetadata(@Param("name") name: string, @Res() res: Response) {
+  @Post("folder")
+  async createFolder(@Body("path") path: string,  @Res() res: Response) {
     
-    const result = await this.fileService.getFileMetadata("media/"+name);
+    await this.fileService.createFolder(path);
+
+    res.sendStatus(204);
+  }
+
+  @Get("meta/:fileName")
+  async downloadMetadata(@Param("fileName") filename: string, @Headers("path") path:string, @Headers("isfolder") isfolder:string, @Res() res: Response) {
+    
+    const result = await this.fileService.getFileMetadata(path + filename+ (isfolder? "/":""));
 
     res.send(result);
   }
@@ -61,11 +61,11 @@ export class FileController {
       },
     })
   )
-  async uploadMedia( @UploadedFile() file: Express.Multer.File, @Res() res: Response) {
+  async uploadMedia( @UploadedFile() file: Express.Multer.File , @Headers("path") path:string, @Res() res: Response) {
 
-    const fileName = "media/" + file.originalname;
-    await this.fileService.save(
-      fileName,
+    // const fileName = "media/" +userId+"/"+ file.originalname;
+    await this.fileService.saveFile(
+      path+file.originalname,
       file.mimetype,
       file.buffer,
       [{ mediaId:  file.originalname}]
@@ -74,11 +74,12 @@ export class FileController {
     res.sendStatus(201);
   }
 
-  @Delete(':path') // must be another, better way 
-  async deleteFile(@Param("path") path:string, @Res() res: Response){
+  @Delete(':filename') // must be another, better way 
+  async deleteFile(@Param("filename") filename:string, @Headers("path") path:string, @Res() res: Response){
 
-    this.fileService.delete("media/"+ path);
+    await this.fileService.delete(path+filename);
     res.sendStatus(200);
   }
 
 }
+

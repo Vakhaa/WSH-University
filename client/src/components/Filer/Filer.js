@@ -1,18 +1,25 @@
 import {useCallback} from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import {addFileAction} from '../../redux/features/files/filesAction'
 
 
-function Filer(props) {
+function Filer({path}) {
 
+  const userId = useSelector(state => state.auth.user._id);
   const dispatch = useDispatch();
 
   var loadFile = useCallback((event) => {
+
+    let folders = "";
+    path.url.forEach( item => folders += item+"/");    
+      
+
     if(event.target.files[0]){
-        dispatch(addFileAction(event.target.files[0]));
+      console.log("folders -> ", folders);
+        dispatch(addFileAction(event.target.files[0], userId, folders));
     };
 
-  },[]);
+  },[path]);
 
   return (<>
   <div style={style.file_loader}>

@@ -20,7 +20,8 @@ export class FileService {
 
     this.bucket = this.configService.get("google.storage.mediaBucket");
   }
-  async save( path: string, contentType: string, media: Buffer, metadata: { [key: string]: string }[]) {
+  
+  async saveFile( path: string, contentType: string, media: Buffer, metadata: { [key: string]: string }[]) {
     
     const object = metadata.reduce((obj, item) => Object.assign(obj, item), {});
     const file = this.storage.bucket(this.bucket).file(path);
@@ -40,15 +41,30 @@ export class FileService {
     stream.end(media);
   }
 
-  delete(path: string) {
-    this.storage.bucket(this.bucket).file(path).delete({ ignoreNotFound: true });
+  async createFolder( path: string) {
+  console.log("createFolder", path);
+
+    return this.storage.bucket(this.bucket).file(path).save('');
   }
 
-  async getFileMetadata(fileName: string){
-    const [metadata] = await this.storage.bucket(this.bucket).file(fileName).getMetadata();
+  delete(path: string) {
+    return this.storage.bucket(this.bucket).file(path).delete({ ignoreNotFound: true });
+  }
+
+  async getFileMetadata(path: string){
+    console.log("getFileMetadata", path);
+
+    const [metadata] = await this.storage.bucket(this.bucket).file(path).getMetadata();
+    
+    let result = metadata.name.split('/');
+    let fileName = result[result.length-1];
+    let isFolder = fileName == '';
 
     return {
-      name:fileName,
+      id: metadata.id,
+      name: isFolder ? result[result.length-2]:fileName,
+      path: metadata.name,
+      isFolder,
       contentType: metadata.contentType,
       timeCreated: metadata.timeCreated,
       updated: metadata.updated,
@@ -69,16 +85,25 @@ export class FileService {
     return storageFile;
   }
 
-  async getAllFilesName(){
+  async getAllFilesName(userId: string){
     
-    const [files] = await this.storage.bucket(this.bucket).getFiles({prefix:"media/", delimiter:"/"});
+    const [files] = await this.storage.bucket(this.bucket).getFiles({prefix:"media/" + userId+"/"});
 
-    return files.map(file => ({
-      name:file.name,
+    return files.map(file => {
+      let result = file.name.split('/');
+
+      let fileName = result[result.length-1];
+      let isFolder = fileName == '';
+
+      return {
+      id: file.metadata.id,
+      name: isFolder ? result[result.length-2]:fileName,
+      path:file.name,
+      isFolder,
       contentType: file.metadata.contentType,
       timeCreated: file.metadata.timeCreated,
       updated: file.metadata.updated,
-    }));
+    }});
   }
 
 }
