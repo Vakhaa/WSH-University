@@ -41,8 +41,7 @@ export class FileService {
     stream.end(media);
   }
 
-  async createFolder( path: string) {
-  console.log("createFolder", path);
+  async createFolder( path: string) : Promise<void>{
 
     return this.storage.bucket(this.bucket).file(path).save('');
   }
@@ -52,7 +51,6 @@ export class FileService {
   }
 
   async getFileMetadata(path: string){
-    console.log("getFileMetadata", path);
 
     const [metadata] = await this.storage.bucket(this.bucket).file(path).getMetadata();
     

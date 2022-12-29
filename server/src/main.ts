@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
+import { SwaggerModule } from '@nestjs/swagger';
+import { swaggerConfig } from '../config/swaggerConfig';
 
-// git -> google -> file upload
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
@@ -11,6 +12,10 @@ async function bootstrap() {
   //CORS
   const cors = configService.get<CorsOption>('cors');
   app.enableCors(cors);
+
+  //Swagger || Open Api
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api', app, document);
 
   //PORT
   const PORT = configService.get('port');

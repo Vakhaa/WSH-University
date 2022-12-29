@@ -8,14 +8,13 @@ function Filer({path}) {
   const userId = useSelector(state => state.auth.user._id);
   const dispatch = useDispatch();
 
-  var loadFile = useCallback((event) => {
+  const loadFile = useCallback((event) => {
 
     let folders = "";
     path.url.forEach( item => folders += item+"/");    
       
 
     if(event.target.files[0]){
-      console.log("folders -> ", folders);
         dispatch(addFileAction(event.target.files[0], userId, folders));
     };
 
