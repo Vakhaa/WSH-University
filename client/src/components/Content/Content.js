@@ -1,44 +1,39 @@
-import Mailer from '../Mailer/Mailer'
 import {
   Routes,
   Route,
 } from "react-router-dom";
 import FilesContainer from '../../containers/FilesContainer';
+import Explorer from '../SideBar/Explorer/Explorer';
+import Description from '../SideBar/Description/Description';
+import Home from '../Home/Home';
 
 
 function Content() {
   return (
-  <Routes>
-    <Route path="/mailer" element={<Mailer/>}>
-      <Route path="explorer" element={<TempElement name={"explorer"}/>}/>
-      <Route path="description" element={<TempElement name={"description"}/>}/>
-    </Route>
-    <Route path="/file-loader" element={<FilesContainer/>}>
-      <Route path="" element={<TempElement name={"explorer"}/>}/>
-      <Route path="explorer" element={<TempElement name={"explorer"}/>}/>
-      <Route path="description" element={<TempElement name={"description"}/>}/>
-    </Route>
-    <Route path="/home" element={<h1>Home</h1>}/>
-    <Route path="/" element={<h1>Home</h1>}/>
-  </Routes>
+    <Routes>
+      <Route index element={<Home />} />
+      <Route path="/home" element={<Home />} />
+      <Route path="/files" element={<FilesContainer />}>
+        <Route index element={<Explorer />} />
+        <Route path="description" element={<Description />} />
+      </Route>
+      <Route path="/tags" element={<>Tags</>}>
+        <Route index element={<Explorer />} />
+        <Route path="description" element={<Description />} />
+      </Route>
+      <Route path="/groups" element={<>Groups</>}>
+        <Route index element={<Explorer />} />
+        <Route path="description" element={<Description />} />
+      </Route>
+      <Route path="/settings" element={<>Settings</>}>
+        <Route index element={<Explorer />} />
+        <Route path="description" element={<Description />} />
+      </Route>
+    </Routes>
   );
 }
 
 export default Content;
-
-const TempElement = ({name}) => {
-
-  return <div style={style.block}><h1>{name}</h1></div>
-}
-
-const style = {
-  block: {
-    width:"20vw",
-    height:"87vh",
-    borderLeft:"1px solid black",
-    backgroundColor:'white'
-  }
-} 
 
 // import {ErrorMessage, Field, Form, Formik} from 'formik'
 // <Formik

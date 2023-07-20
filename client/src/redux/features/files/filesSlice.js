@@ -27,6 +27,7 @@ const filesSlice = createSlice({
   }
 })
 
-export const { fileAdded, filesGet, fileDelete, folderAdded } = filesSlice.actions
-export const selectFiles = state => state.files.files
-export default filesSlice.reducer
+export const { fileAdded, filesGet, fileDelete, folderAdded } = filesSlice.actions;
+export const selectFiles = state => state.files.files;
+export const selectFolders = state => state.files.files.filter(file => file.isFolder);
+export default filesSlice.reducer;

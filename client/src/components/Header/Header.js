@@ -5,7 +5,6 @@ import { Navigation } from './Navigation';
 import {
   logoutAction
 } from '../../redux/features/authentication/authenticationsAction'
-import { NavLink } from 'react-router-dom';
 
 function Header() {
   const isLogin = useSelector(state => state.auth.isLogin);
@@ -13,20 +12,13 @@ function Header() {
 
   return (
     <>
-      <header style={style.header}>
-        <div style={{ alignSelf:'flex-end'}}>
-          {/* clear ! */}
-          {isLogin && <Navigation />}
-        </div>
-        <div style={style.iam_and_logout}>
-          {isLogin ? <MiniProfile /> : <Login login={() => dispatch(loginAction())} />}
-          {isLogin && <>
-            <NavLink to="/" key={3} onClick={() => dispatch(logoutAction())}>
-              <span>Logout</span>
-            </NavLink>
-          </>}
-        </div>
-      </header>
+      <div style={{ alignSelf: 'flex-end' }}>
+        {/* clear ! */}
+        <Navigation isLogin={isLogin} />
+      </div>
+      <div style={style.iam_and_logout}>
+        {isLogin ? <MiniProfile logout={() => dispatch(logoutAction())} /> : <Login login={() => dispatch(loginAction())} />}
+      </div>
     </>
   );
 }
@@ -34,16 +26,6 @@ function Header() {
 export default Header;
 
 const style = {
-  header: {
-    backgroundColor: 'grey',
-    width: "100%",
-    height: "100px",
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: "space-between",
-    borderBottom: '1px solid black'
-
-  },
   signin: {
     width: "150px",
     height: "35px",
